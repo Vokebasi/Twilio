@@ -1,19 +1,19 @@
 
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .
+from .utils import normalize_phone
 
 User = get_user_model()
 
 # class RegistrationSerializer(serializers.Serializer):
 #     nickname = serializers.CharField(max_length=20)
 
-class RegistrationSerializer(serializers.Serializer):
+class RegistrationSerializer(serializers.ModelSerializer):
     password_confirm = serializers.CharField(max_length=100, required=True)
 
     class Meta:
         model = User
-        fields = ('nickname', 'phone', 'password')
+        fields = ('nickname', 'phone', 'password', 'password_confirm')
 
     def validate_nickname(self, nickname):
         if User.objects.filter(nickname=nickname).exists():
@@ -21,7 +21,7 @@ class RegistrationSerializer(serializers.Serializer):
         return nickname
 
     def validate_phone(self, phone):
-        phone = normalize_phone()
+        phone = normalize_phone(phone)
         if len(phone) != 13:
             raise serializers.ValidationError('Invalid phone format')
 
@@ -38,3 +38,10 @@ class RegistrationSerializer(serializers.Serializer):
 
         if password1 != password_confirm:
             raise serializers.ValidationError('Password do not match')
+        return attrs
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        user.create_activation_code()
+        user.send_activation_sms()
+        return user

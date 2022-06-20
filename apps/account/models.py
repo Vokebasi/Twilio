@@ -1,5 +1,4 @@
 from django.db import models
-
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.conf import settings
 
@@ -37,8 +36,8 @@ class CustomUser(AbstractBaseUser):
     def __str__(self) -> str:
         return self.nickname
     
-    def has_model_perms(self, app_label):
-        return 
+    def has_module_perms(self, app_label):
+        return self.is_staff
 
     def has_perm(self, obj=None):
         return self.is_staff
@@ -51,7 +50,7 @@ class CustomUser(AbstractBaseUser):
         self.activation_code = code
         self.save()
 
-    def send_activatoins_sms(self):
+    def send_activation_sms(self):
         from twilio.rest import Client
         client = Client(settings.TWILIO_SID, settings.TWILIO_AUTH_TOKEN)
         message = client.messages.create(
