@@ -17,3 +17,17 @@ class RegistrationView(APIView):
                 status=201
             )
         return Response(serializer.errors, status=400)
+
+
+
+class ActivationView(APIView):
+    def get(self, request, code):
+        user = User.objects.filter(activation_code=code).first()
+        if user:
+            user.is_active = True
+            user.save()
+            return Response(
+                'Your account is activated',
+                status=200
+            )
+        return Response('Invalid activation code', status=400)
