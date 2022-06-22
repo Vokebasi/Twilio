@@ -38,6 +38,7 @@ INSTALLED_APPS = [
 
     'apps.account',
     'apps.publication',
+    'apps.category'
     
 
 ]

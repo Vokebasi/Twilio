@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from slugify import slugify
 from datetime import datetime
+from apps.category.models import Category
 
 User = get_user_model()
 
@@ -14,6 +15,7 @@ class Publication(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     views_count = models.PositiveIntegerField(default=0)
     published = models.BooleanField(default=False)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='publications', null=True)
 
     def __str__(self) -> str:
         return f'{self.title} from {self.author.nickname}'
