@@ -9,11 +9,18 @@ class PublicationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Publication
-        fields = ('author', 'title', 'content', 'created_at', 'updated_at', 'views_count')
+        fields = ('author', 'title', 'content', 'created_at', 'updated_at', 'views_count', 'category')
 
     def save(self, **kwargs):
         print(**kwargs)
         self.validated_data['author'] = self.context['request'].user
         print(self.validated_data)
         return super().save(**kwargs)
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['images'] = [{'image': image.image.url} for image in instance.pub_images.all()]
+        return rep
+
+
 
