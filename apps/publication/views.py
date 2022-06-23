@@ -4,11 +4,17 @@ from .serializers import PublicationSerializer
 from .models import Publication
 from rest_framework import permissions
 from .permissions import IsOwnerOrReadOnly
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
+# from .filters import PublicationDateFilter
 
 class PublicationViewSet(ModelViewSet):
     queryset = Publication.objects.filter(published=True)
     serializer_class = PublicationSerializer
+    # filterset_class = PublicationDateFilter
     filterset_fields = ['category', 'author']
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    search_fields = ['title', 'content']
 
     def retrieve(self, request, *args, **kwargs):
         publication = self.get_object()
