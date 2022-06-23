@@ -5,7 +5,7 @@ class PublicationSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.nickname')
     created_at = serializers.DateTimeField(format='%d:%m:%Y %H:%M')
     updated_at = serializers.DateTimeField(format='%d:%m:%Y %H:%M')
-    views_count = serializers.ReadOnlyField(source='views_count')
+    views_count = serializers.ReadOnlyField()
 
     class Meta:
         model = Publication

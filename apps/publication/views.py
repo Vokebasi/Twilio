@@ -8,6 +8,7 @@ from .permissions import IsOwnerOrReadOnly
 class PublicationViewSet(ModelViewSet):
     queryset = Publication.objects.filter(published=True)
     serializer_class = PublicationSerializer
+    filterset_fields = ['category', 'author']
 
     def retrieve(self, request, *args, **kwargs):
         publication = self.get_object()
